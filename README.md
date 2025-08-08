@@ -16,6 +16,10 @@ Este proyecto es una demostración de habilidades en análisis exploratorio de d
 - plotly
 - streamlit
 
+## 🌍 Versión online
+
+Enlance a la versión [online](https://simple-data-app.onrender.com/).
+
 ## ⚙️ Setup
 
 1. Clonar repositorio
