@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 
-# Cargar datos
+# Load data
 @st.cache_data
 def load_data():
     df = pd.read_csv('vehicles_us.csv')
@@ -13,18 +13,18 @@ def load_data():
 
 vehicles_df = load_data()
 
-# Título de la app
-st.title("Análisis de anuncios de vehículos en EE.UU.")
+# App title
+st.title("US vehicle ads analysis")
 
-# Mostrar información general del dataset
-with st.expander("🔍 Vista General del Dataset"):
+# Display dataset general info
+with st.expander("🔍 Dataset overview"):
     st.write(vehicles_df.sample(5))
-    st.write("**Estadísticas Descriptivas:**")
+    st.write("**Descriptive statistics:**")
     st.write(vehicles_df.describe())
-    st.write(f"Registros duplicados: {vehicles_df.duplicated().sum()}")
+    st.write(f"Duplicate records: {vehicles_df.duplicated().sum()}")
 
-# Histograma del odómetro
-st.subheader("Distribución del Odómetro")
+# Odometer histogram
+st.subheader("Odometer distribution")
 fig_odometer = go.Figure(data=[go.Histogram(
     x=vehicles_df['odometer'],
     xbins=dict(
@@ -34,8 +34,8 @@ fig_odometer = go.Figure(data=[go.Histogram(
     )
 )])
 fig_odometer.update_layout(
-    xaxis_title='Odómetro',
-    yaxis_title='Frecuencia',
+    xaxis_title='Odometer',
+    yaxis_title='Frequency',
     width=800,
     height=500,
     margin=dict(
@@ -44,12 +44,12 @@ fig_odometer.update_layout(
 )
 st.plotly_chart(fig_odometer)
 
-# Checkbox para alternar entre distribución del precio y del año del modelo
-show_year_histogram = st.checkbox('Mostrar distribución del año del modelo')
+# Checkbox to toggle between price and model year distribution
+show_year_histogram = st.checkbox('Show model year distribution')
 
 if show_year_histogram:
-    # Histograma del año del modelo
-    st.subheader("Distribución del Año del Modelo")
+    # Model year histogram
+    st.subheader("Model year distribution")
     fig_year = go.Figure(data=[go.Histogram(
         x=vehicles_df['model_year'],
         xbins=dict(
@@ -57,8 +57,8 @@ if show_year_histogram:
         )
     )])
     fig_year.update_layout(
-        xaxis_title='Año del Modelo',
-        yaxis_title='Frecuencia',
+        xaxis_title='Model year',
+        yaxis_title='Frequency',
         width=800,
         height=500,
         margin=dict(
@@ -67,8 +67,8 @@ if show_year_histogram:
     )
     st.plotly_chart(fig_year)
 else:
-    # Histograma del precio
-    st.subheader("Distribución del Precio")
+    # Price histogram
+    st.subheader("Price distribution")
     fig_price = go.Figure(data=[go.Histogram(
         x=vehicles_df['price'],
         xbins=dict(
@@ -78,8 +78,8 @@ else:
         )
     )])
     fig_price.update_layout(
-        xaxis_title='Precio',
-        yaxis_title='Frecuencia',
+        xaxis_title='Price',
+        yaxis_title='Frequency',
         width=800,
         height=500,
         margin=dict(
@@ -88,19 +88,19 @@ else:
     )
     st.plotly_chart(fig_price)
 
-# Dispersión: Precio vs Odómetro para condición 'like new'
-st.subheader('Precio vs Odómetro por Condición')
+# Scatter plot: Price vs. Odometer for every condition
+st.subheader('Price vs Odometer by condition')
 
-# Dropdown para seleccionar la condición
+# Dropdown to select condition
 selected_condition = st.selectbox(
-    'Selecciona la condición del vehículo:',
+    'Select vehicle condition:',
     sorted(vehicles_df['condition'].dropna().unique())
 )
 
-# Filtra el dataset con la condición
+# Filter the dataset with the condition
 filtered_df = vehicles_df[vehicles_df['condition'] == selected_condition]
 
-# Crea el gráfico de dispersión
+# Create the scatter plot
 fig_scatter = go.Figure()
 fig_scatter.add_trace(go.Scatter(
     x=filtered_df['odometer'],
@@ -111,16 +111,16 @@ fig_scatter.add_trace(go.Scatter(
     hovertemplate="(%{x}, $%{y})<extra></extra>"
 ))
 fig_scatter.update_layout(
-    xaxis_title='Odómetro',
-    yaxis_title='Precio',
+    xaxis_title='Odometer',
+    yaxis_title='Price',
     margin=dict(
         t=0
     )
 )
 st.plotly_chart(fig_scatter)
 
-# Gráfico de barras: Precio promedio por tipo de coche
-st.subheader("Precio Promedio por Tipo de Vehículo")
+# Bar chart: Average price by car type
+st.subheader("Average price by vehicle type")
 avg_price_by_type = vehicles_df.groupby(
     'type')['price'].mean().reset_index()
 fig_bar = go.Figure(data=[go.Bar(
@@ -129,8 +129,8 @@ fig_bar = go.Figure(data=[go.Bar(
     hovertemplate="(%{x}, $%{y:,.0f})<extra></extra>"
 )])
 fig_bar.update_layout(
-    xaxis_title='Tipo',
-    yaxis_title='Precio Promedio',
+    xaxis_title='Type',
+    yaxis_title='Average price',
     width=800,
     height=500,
     margin=dict(
